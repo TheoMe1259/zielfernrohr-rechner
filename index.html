@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Einschießhilfe</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    input {
+      width: 80px;
+      margin: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 10px 5px;
+      cursor: pointer;
+    }
+    .button-group {
+      text-align: center;
+    }
+    .result, .info {
+      background: #fff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    .info {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h2>📐 Zielfernrohr-Korrektur-Rechner</h2>
+  <p style="text-align:center; margin-top: -10px; font-size: 14px; color: #555;">
+    made by Siggi
+  </p>
+
+  <div class="info">
+    <h3>ℹ️ Bedienungsanleitung</h3>
+    <p>
+      Gib hier die Abweichung in Zentimetern ein, wie du deine Schüsse auf 100 Meter getroffen hast. 
+      Es sind bis zu 3 Schüsse möglich.<br><br>
+      <strong>Vorzeichenregel:</strong><br>
+      ➤ <strong>Höhe</strong>: + = zu hoch / − = zu tief<br>
+      ➤ <strong>Seite</strong>: + = zu weit links / − = zu weit rechts<br><br>
+      Die Berechnung erfolgt für:<br>
+      – ¼ MOA (0,73 cm/Klick)<br>
+      – metrisch (1 cm/Klick)
+    </p>
+  </div>
+
+  <p><strong>Abweichungen der Schüsse eingeben:</strong></p>
+
+  <div>
+    <strong>Schuss 1:</strong><br>
+    Höhe: <input type="number" id="h1" step="0.1"> cm
+    Seite: <input type="number" id="s1" step="0.1"> cm
+  </div>
+  <div>
+    <strong>Schuss 2:</strong><br>
+    Höhe: <input type="number" id="h2" step="0.1"> cm
+    Seite: <input type="number" id="s2" step="0.1"> cm
+  </div>
+  <div>
+    <strong>Schuss 3:</strong><br>
+    Höhe: <input type="number" id="h3" step="0.1"> cm
+    Seite: <input type="number" id="s3" step="0.1"> cm
+  </div>
+
+  <div class="button-group">
+    <button onclick="berechnen()">🎯 Korrektur berechnen</button>
+    <button onclick="resetForm()">🔄 Zurücksetzen</button>
+  </div>
+
+  <div class="result" id="ergebnis"></div>
+
+  <script>
+    function berechnen() {
+      const h = [
+        document.getElementById("h1").value,
+        document.getElementById("h2").value,
+        document.getElementById("h3").value
+      ].map(Number).filter(x => !isNaN(x));
+
+      const s = [
+        document.getElementById("s1").value,
+        document.getElementById("s2").value,
+        document.getElementById("s3").value
+      ].map(Number).filter(x => !isNaN(x));
+
+      if (h.length === 0 || s.length === 0) {
+        document.getElementById("ergebnis").innerHTML = "Bitte mindestens einen Schuss eingeben.";
+        return;
+      }
+
+      const hMittel = h.reduce((a, b) => a + b, 0) / h.length;
+      const sMittel = s.reduce((a, b) => a + b, 0) / s.length;
+
+      const klickMOA = 0.73;
+      const klickMetrisch = 1.0;
+
+      const hoeheKlicksMOA = Math.round(hMittel / klickMOA);
+      const seiteKlicksMOA = Math.round(sMittel / klickMOA);
+
+      const hoeheKlicksMetrisch = Math.round(hMittel / klickMetrisch);
+      const seiteKlicksMetrisch = Math.round(sMittel / klickMetrisch);
+
+      document.getElementById("ergebnis").innerHTML = `
+        <h3>🔧 Korrekturvorschlag</h3>
+        <p><strong>Mittelwert Höhe:</strong> ${hMittel.toFixed(1)} cm<br>
+        <strong>Mittelwert Seite:</strong> ${sMittel.toFixed(1)} cm</p>
+
+        <p><strong>¼ MOA Klick-Verstellung:</strong><br>
+        ➤ ${Math.abs(hoeheKlicksMOA)} Klicks ${hoeheKlicksMOA > 0 ? "nach unten" : "nach oben"}<br>
+        ➤ ${Math.abs(seiteKlicksMOA)} Klicks ${seiteKlicksMOA > 0 ? "nach rechts" : "nach links"}</p>
+
+        <p><strong>Metrische Verstellung (1 cm/Klick):</strong><br>
+        ➤ ${Math.abs(hoeheKlicksMetrisch)} Klicks ${hoeheKlicksMetrisch > 0 ? "nach unten" : "nach oben"}<br>
+        ➤ ${Math.abs(seiteKlicksMetrisch)} Klicks ${seiteKlicksMetrisch > 0 ? "nach rechts" : "nach links"}</p>
+      `;
+    }
+
+    function resetForm() {
+      const ids = ["h1", "h2", "h3", "s1", "s2", "s3"];
+      ids.forEach(id => document.getElementById(id).value = "");
+      document.getElementById("ergebnis").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
+
+
+
+

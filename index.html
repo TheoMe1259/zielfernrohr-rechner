@@ -50,7 +50,7 @@
         .shot-input label {
             flex-grow: 1;
             margin-right: 10px;
-            min-width: 80px; /* Feste Breite für die Beschriftungen */
+            min-width: 80px;
         }
         .shot-input div {
             display: flex;
@@ -160,7 +160,7 @@
                 Sie können **zwischen 3 und 5 Schüsse** erfassen.<br><br>
                 <strong>Vorzeichenregel:</strong><br>
                 ➤ **Höhe**: + = zu hoch / − = zu tief<br>
-                ➤ **Seite**: + = zu weit rechts / − = zu weit links<br>
+                ➤ **Seite**: + = zu weit links / − = zu weit rechts<br>
             </p>
         </div>
 
@@ -264,8 +264,9 @@
             const klicksHoehe = Math.round(Math.abs(hMittel) / klickWertCm);
             const klicksSeite = Math.round(Math.abs(sMittel) / klickWertCm);
 
+            // Korrigierte Drehrichtung basierend auf der neuen Vorzeichenregel
             const richtungHoehe = hMittel < 0 ? "nach oben (UP)" : "nach unten (DOWN)";
-            const richtungSeite = sMittel < 0 ? "nach links (L)" : "nach rechts (R)";
+            const richtungSeite = sMittel < 0 ? "nach rechts (R)" : "nach links (L)";
 
             document.getElementById("ergebnis").innerHTML = `
                 <h3>🔧 Korrekturvorschlag für ${bezeichnung}</h3>
@@ -285,8 +286,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-

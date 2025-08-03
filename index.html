@@ -1,143 +1,291 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Einschießhilfe</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    h2, h3 {
-      text-align: center;
-    }
-    input {
-      width: 80px;
-      margin: 5px;
-    }
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      margin: 10px 5px;
-      cursor: pointer;
-    }
-    .button-group {
-      text-align: center;
-    }
-    .result, .info {
-      background: #fff;
-      padding: 15px;
-      margin-top: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-    .info {
-      font-size: 14px;
-      line-height: 1.5;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einschießhilfe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .info {
+            background: #e9f5ff;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+        .info strong {
+            color: #2980b9;
+        }
+        .input-group, .select-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .shot-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .shot-input label {
+            flex-grow: 1;
+            margin-right: 10px;
+            min-width: 80px; /* Feste Breite für die Beschriftungen */
+        }
+        .shot-input div {
+            display: flex;
+            align-items: center;
+            flex-grow: 2;
+        }
+        .shot-input input {
+            width: 100%;
+            margin: 0 5px;
+        }
+        .shot-input input:first-child {
+            margin-left: 0;
+        }
+        .shot-input input:last-child {
+            margin-right: 0;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 25px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .calculate-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .calculate-btn:hover {
+            background-color: #218838;
+        }
+        .reset-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .reset-btn:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        .result h3 {
+            color: #17a2b8;
+        }
+        .result p {
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        .error-message {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .button-group button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            .shot-input {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .shot-input div {
+                width: 100%;
+                margin-top: 5px;
+            }
+            .shot-input label {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>📐 Zielfernrohr-Korrektur-Rechner</h2>
-  <p style="text-align:center; margin-top: -10px; font-size: 14px; color: #555;">
-    made by Siggi
-  </p>
+    <div class="container">
+        <h2>🎯 Zielfernrohr-Korrektur-Rechner</h2>
+        <p style="text-align:center; font-size: 0.9em; color: #777;">
+            made by Siggi
+        </p>
+        
+        <div class="info">
+            <h3>ℹ️ Bedienungsanleitung</h3>
+            <p>
+                Geben Sie die Abweichung Ihrer Schüsse in Zentimetern ein.
+                Sie können **zwischen 3 und 5 Schüsse** erfassen.<br><br>
+                <strong>Vorzeichenregel:</strong><br>
+                ➤ **Höhe**: + = zu hoch / − = zu tief<br>
+                ➤ **Seite**: + = zu weit rechts / − = zu weit links<br>
+            </p>
+        </div>
 
-  <div class="info">
-    <h3>ℹ️ Bedienungsanleitung</h3>
-    <p>
-      Gib hier die Abweichung in Zentimetern ein, wie du deine Schüsse auf 100 Meter getroffen hast. 
-      Es sind bis zu 3 Schüsse möglich.<br><br>
-      <strong>Vorzeichenregel:</strong><br>
-      ➤ <strong>Höhe</strong>: + = zu hoch / − = zu tief<br>
-      ➤ <strong>Seite</strong>: + = zu weit links / − = zu weit rechts<br><br>
-      Die Berechnung erfolgt für:<br>
-      – ¼ MOA (0,73 cm/Klick)<br>
-      – metrisch (1 cm/Klick)
-    </p>
-  </div>
+        <div class="select-group">
+            <label for="scope-select">Wählen Sie Ihr Zielfernrohr:</label>
+            <select id="scope-select">
+                <option value="1">Schmidt & Bender PM II (1 cm / 0.1 MRAD)</option>
+                <option value="2">Zeiss Conquest V4 (1/4 MOA)</option>
+                <option value="3">Steiner Ranger (1/8 MOA)</option>
+            </select>
+        </div>
 
-  <p><strong>Abweichungen der Schüsse eingeben:</strong></p>
+        <div class="input-group">
+            <h3>Abweichungen der Schüsse (in cm)</h3>
+            <div class="shot-input">
+                <label>Schuss 1:</label>
+                <div>
+                    <input type="number" id="h1" placeholder="Höhe (+/-)" step="0.1">
+                    <input type="number" id="s1" placeholder="Seite (+/-)" step="0.1">
+                </div>
+            </div>
+            <div class="shot-input">
+                <label>Schuss 2:</label>
+                <div>
+                    <input type="number" id="h2" placeholder="Höhe (+/-)" step="0.1">
+                    <input type="number" id="s2" placeholder="Seite (+/-)" step="0.1">
+                </div>
+            </div>
+            <div class="shot-input">
+                <label>Schuss 3:</label>
+                <div>
+                    <input type="number" id="h3" placeholder="Höhe (+/-)" step="0.1">
+                    <input type="number" id="s3" placeholder="Seite (+/-)" step="0.1">
+                </div>
+            </div>
+            <div class="shot-input">
+                <label>Schuss 4:</label>
+                <div>
+                    <input type="number" id="h4" placeholder="Höhe (+/-)" step="0.1">
+                    <input type="number" id="s4" placeholder="Seite (+/-)" step="0.1">
+                </div>
+            </div>
+            <div class="shot-input">
+                <label>Schuss 5:</label>
+                <div>
+                    <input type="number" id="h5" placeholder="Höhe (+/-)" step="0.1">
+                    <input type="number" id="s5" placeholder="Seite (+/-)" step="0.1">
+                </div>
+            </div>
+        </div>
 
-  <div>
-    <strong>Schuss 1:</strong><br>
-    Höhe: <input type="number" id="h1" step="0.1"> cm
-    Seite: <input type="number" id="s1" step="0.1"> cm
-  </div>
-  <div>
-    <strong>Schuss 2:</strong><br>
-    Höhe: <input type="number" id="h2" step="0.1"> cm
-    Seite: <input type="number" id="s2" step="0.1"> cm
-  </div>
-  <div>
-    <strong>Schuss 3:</strong><br>
-    Höhe: <input type="number" id="h3" step="0.1"> cm
-    Seite: <input type="number" id="s3" step="0.1"> cm
-  </div>
+        <div class="button-group">
+            <button class="calculate-btn" onclick="berechnen()">🎯 Korrektur berechnen</button>
+            <button class="reset-btn" onclick="resetForm()">🔄 Zurücksetzen</button>
+        </div>
 
-  <div class="button-group">
-    <button onclick="berechnen()">🎯 Korrektur berechnen</button>
-    <button onclick="resetForm()">🔄 Zurücksetzen</button>
-  </div>
+        <div class="result" id="ergebnis"></div>
+    </div>
 
-  <div class="result" id="ergebnis"></div>
+    <script>
+        function berechnen() {
+            const scopeChoice = document.getElementById("scope-select").value;
+            let klickWertCm;
+            let bezeichnung;
 
-  <script>
-    function berechnen() {
-      const h = [
-        document.getElementById("h1").value,
-        document.getElementById("h2").value,
-        document.getElementById("h3").value
-      ].map(Number).filter(x => !isNaN(x));
+            if (scopeChoice === '1') {
+                klickWertCm = 1.0;
+                bezeichnung = "Schmidt & Bender PM II (1 cm / 0.1 MRAD)";
+            } else if (scopeChoice === '2') {
+                klickWertCm = 0.727;
+                bezeichnung = "Zeiss Conquest V4 (1/4 MOA)";
+            } else if (scopeChoice === '3') {
+                klickWertCm = 0.3635;
+                bezeichnung = "Steiner Ranger (1/8 MOA)";
+            }
 
-      const s = [
-        document.getElementById("s1").value,
-        document.getElementById("s2").value,
-        document.getElementById("s3").value
-      ].map(Number).filter(x => !isNaN(x));
+            const h = [
+                document.getElementById("h1").value,
+                document.getElementById("h2").value,
+                document.getElementById("h3").value,
+                document.getElementById("h4").value,
+                document.getElementById("h5").value
+            ].map(Number).filter(x => !isNaN(x));
 
-      if (h.length === 0 || s.length === 0) {
-        document.getElementById("ergebnis").innerHTML = "Bitte mindestens einen Schuss eingeben.";
-        return;
-      }
+            const s = [
+                document.getElementById("s1").value,
+                document.getElementById("s2").value,
+                document.getElementById("s3").value,
+                document.getElementById("s4").value,
+                document.getElementById("s5").value
+            ].map(Number).filter(x => !isNaN(x));
 
-      const hMittel = h.reduce((a, b) => a + b, 0) / h.length;
-      const sMittel = s.reduce((a, b) => a + b, 0) / s.length;
+            if (h.length < 3 || s.length < 3) {
+                document.getElementById("ergebnis").innerHTML = `<p class="error-message">Bitte geben Sie mindestens 3 Schüsse ein.</p>`;
+                return;
+            }
 
-      const klickMOA = 0.73;
-      const klickMetrisch = 1.0;
+            const hMittel = h.reduce((a, b) => a + b, 0) / h.length;
+            const sMittel = s.reduce((a, b) => a + b, 0) / s.length;
 
-      const hoeheKlicksMOA = Math.round(hMittel / klickMOA);
-      const seiteKlicksMOA = Math.round(sMittel / klickMOA);
+            const klicksHoehe = Math.round(Math.abs(hMittel) / klickWertCm);
+            const klicksSeite = Math.round(Math.abs(sMittel) / klickWertCm);
 
-      const hoeheKlicksMetrisch = Math.round(hMittel / klickMetrisch);
-      const seiteKlicksMetrisch = Math.round(sMittel / klickMetrisch);
+            const richtungHoehe = hMittel < 0 ? "nach oben (UP)" : "nach unten (DOWN)";
+            const richtungSeite = sMittel < 0 ? "nach links (L)" : "nach rechts (R)";
 
-      document.getElementById("ergebnis").innerHTML = `
-        <h3>🔧 Korrekturvorschlag</h3>
-        <p><strong>Mittelwert Höhe:</strong> ${hMittel.toFixed(1)} cm<br>
-        <strong>Mittelwert Seite:</strong> ${sMittel.toFixed(1)} cm</p>
+            document.getElementById("ergebnis").innerHTML = `
+                <h3>🔧 Korrekturvorschlag für ${bezeichnung}</h3>
+                <p><strong>Mittelwert Höhe:</strong> ${hMittel.toFixed(2)} cm</p>
+                <p><strong>Mittelwert Seite:</strong> ${sMittel.toFixed(2)} cm</p>
+                <p><strong>Höhenverstellung:</strong> Drehen Sie ${klicksHoehe} Klick(s) ${richtungHoehe}</p>
+                <p><strong>Seitenverstellung:</strong> Drehen Sie ${klicksSeite} Klick(s) ${richtungSeite}</p>
+            `;
+        }
 
-        <p><strong>¼ MOA Klick-Verstellung:</strong><br>
-        ➤ ${Math.abs(hoeheKlicksMOA)} Klicks ${hoeheKlicksMOA > 0 ? "nach unten" : "nach oben"}<br>
-        ➤ ${Math.abs(seiteKlicksMOA)} Klicks ${seiteKlicksMOA > 0 ? "nach rechts" : "nach links"}</p>
-
-        <p><strong>Metrische Verstellung (1 cm/Klick):</strong><br>
-        ➤ ${Math.abs(hoeheKlicksMetrisch)} Klicks ${hoeheKlicksMetrisch > 0 ? "nach unten" : "nach oben"}<br>
-        ➤ ${Math.abs(seiteKlicksMetrisch)} Klicks ${seiteKlicksMetrisch > 0 ? "nach rechts" : "nach links"}</p>
-      `;
-    }
-
-    function resetForm() {
-      const ids = ["h1", "h2", "h3", "s1", "s2", "s3"];
-      ids.forEach(id => document.getElementById(id).value = "");
-      document.getElementById("ergebnis").innerHTML = "";
-    }
-  </script>
+        function resetForm() {
+            const ids = ["h1", "h2", "h3", "s1", "s2", "s3", "h4", "s4", "h5", "s5"];
+            ids.forEach(id => document.getElementById(id).value = "");
+            document.getElementById("scope-select").value = "1";
+            document.getElementById("ergebnis").innerHTML = "";
+        }
+    </script>
 </body>
 </html>
+
 
 
 
